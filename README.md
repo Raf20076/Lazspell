@@ -8,7 +8,7 @@ Lazspell is based on example from
 https://wiki.lazarus.freepascal.org/spelling#Demo_3_-_Spellchecker_-_non_characters.2C_carriage_return.2C_split_string
 
 Lazspell uses a few dictionaries coded in UTF8 like de_De, en_GB, es_ES, fr_FR, it_IT, pl_PL, pt_PT and ru_RU
-wich are dict folder. Put any dictionary in dict folder and it will be listed.
+wich are dict folder. Put any dictionary in dict folder and they will be listed.
 
 Lazspell uses libhunspell.dll library which was compiled with Microsoft Visual C++ 2010. 
 From http://sourceforge.net/projects/hunspell/files/Hunspell/1.3.2/hunspell-1.3.2.tar.gz/download
