@@ -1,0 +1,88 @@
+object MainForm: TMainForm
+  Left = 491
+  Height = 431
+  Top = 209
+  Width = 531
+  Caption = 'Lazspell'
+  ClientHeight = 431
+  ClientWidth = 531
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '2.0.10.0'
+  object StatusBar: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 408
+    Width = 531
+    Panels = <>
+  end
+  object ChooseDictionary: TComboBox
+    Left = 0
+    Height = 21
+    Top = 0
+    Width = 128
+    ItemHeight = 15
+    Items.Strings = (
+      'Choose dictionary'
+    )
+    OnChange = ChooseDictionaryChange
+    Style = csOwnerDrawFixed
+    TabOrder = 1
+  end
+  object ButtonCheckSpelling: TButton
+    Left = 128
+    Height = 23
+    Top = 0
+    Width = 96
+    Caption = 'Check spelling'
+    OnClick = ButtonCheckSpellingClick
+    TabOrder = 2
+  end
+  object ListBoxErrors: TListBox
+    Left = 351
+    Height = 151
+    Top = 24
+    Width = 179
+    Anchors = [akTop, akRight]
+    ItemHeight = 0
+    OnClick = ListBoxErrorsClick
+    TabOrder = 3
+  end
+  object ListBoxSuggestions: TListBox
+    Left = 351
+    Height = 215
+    Top = 192
+    Width = 179
+    Anchors = [akTop, akRight, akBottom]
+    ItemHeight = 0
+    OnClick = ListBoxSuggestionsClick
+    TabOrder = 4
+  end
+  object LabelSuggestions: TLabel
+    Left = 351
+    Height = 15
+    Top = 176
+    Width = 64
+    Anchors = [akTop, akRight]
+    Caption = 'Suggestions'
+    ParentColor = False
+  end
+  object LabelErrors: TLabel
+    Left = 351
+    Height = 15
+    Top = 8
+    Width = 30
+    Anchors = [akTop, akRight]
+    Caption = 'Errors'
+    ParentColor = False
+  end
+  object MemoText: TMemo
+    Left = 0
+    Height = 383
+    Top = 24
+    Width = 344
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ScrollBars = ssVertical
+    TabOrder = 5
+  end
+end
