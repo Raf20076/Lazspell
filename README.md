@@ -1,8 +1,6 @@
 # Lazspell
 Lazspell - Lazspell is an example of simple spellcheker application for Lazarus ide.
 
-In Lazspell folder create dict folder and put there all dictionaries.
-
 Lazspell is based on example from 
 
 https://wiki.lazarus.freepascal.org/spelling#Demo_3_-_Spellchecker_-_non_characters.2C_carriage_return.2C_split_string
