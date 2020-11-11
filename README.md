@@ -1,5 +1,5 @@
 # Lazspell
-Lazspell - Lazspell is an example of simple spellcheker application for Lazarus ide.
+Lazspell - Lazspell is an example of simple spellcheker program for Lazarus ide.
 
 <img src="https://raw.githubusercontent.com/Raf20076/Lazspell/master/Lazspell.PNG"/>
 
