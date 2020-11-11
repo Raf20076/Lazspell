@@ -1,6 +1,8 @@
 # Lazspell
 Lazspell - Lazspell is an example of simple spellcheker application for Lazarus ide.
 
+<img src="https://raw.githubusercontent.com/Raf20076/Lazspell/master/Lazspell.PNG"/>
+
 Lazspell is based on example from 
 
 https://wiki.lazarus.freepascal.org/spelling#Demo_3_-_Spellchecker_-_non_characters.2C_carriage_return.2C_split_string
