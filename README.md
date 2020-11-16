@@ -1,9 +1,8 @@
 # Lazspell
+Lazspell by Raf20076, Poland, 2020
 Lazspell - Lazspell is an example of simple spellcheker program written in Lazarus ide.
 
 <img src="https://raw.githubusercontent.com/Raf20076/Lazspell/master/Screenshot.PNG"/>
-
-Lazspel by Raf20076, Poland, 2020
 
 Lazspell is an example of a speller which checks spelling in German, English, Spanish,
 French, Italian, Portugues, Polish and Russian.
@@ -23,6 +22,7 @@ uses LazUTF8, SysUtils, {$ifdef linux}Process,{$endif} LazFileUtils, {Forms,} la
 Lazspell is under license: 
 
 Unit Main License is https://creativecommons.org/publicdomain/zero/1.0/deed.en 
+
 Unit Functions License is https://creativecommons.org/publicdomain/zero/1.0/deed.en
 
 libhunspell.dll was compiled with Microsoft Visual C++ 2010. from the original source from 
