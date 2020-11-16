@@ -33,8 +33,8 @@ You must distribute this file with your program.
 
 Lazspell
 
-1. Choose dictionary (Check spelling button will be enabled)
+1. Choose dictionary (Check button will be enabled)
 2. Type text in memo box
-3. Click Check spelling button
+3. Click Check button
 4. If errors found, click an error in Errors box, the error will be highlighted in memo box
 5. Click a word in Suggestions box to change highlighted error for suggested word
