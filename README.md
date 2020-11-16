@@ -1,17 +1,33 @@
 # Lazspell
 Lazspell - Lazspell is an example of simple spellcheker program written in Lazarus ide.
 
-<img src="https://raw.githubusercontent.com/Raf20076/Lazspell/master/Lazspell.PNG"/>
+<img src="https://raw.githubusercontent.com/Raf20076/Lazspell/master/Screenshot.PNG/>
 
-Lazspell is based on example from 
+Lazspel by Raf20076, Poland, 2020
 
-https://wiki.lazarus.freepascal.org/spelling#Demo_3_-_Spellchecker_-_non_characters.2C_carriage_return.2C_split_string
+Lazspell is an example of a speller which checks spelling in German, English, Spanish,
+French, Italian, Portugues, Polish and Russian.
 
-Lazspell uses a few dictionaries coded in UTF8 like de_De, en_GB, es_ES, fr_FR, it_IT, pl_PL, pt_PT and ru_RU
-wich are dict folder. Put any dictionary in dict folder and it will be listed.
+All dictionaries are coded in UTF-8 from https://github.com/wooorm/dictionaries
 
-Lazspell uses libhunspell.dll library which was compiled with Microsoft Visual C++ 2010. 
-From http://sourceforge.net/projects/hunspell/files/Hunspell/1.3.2/hunspell-1.3.2.tar.gz/download
+Lazspell uses hunspell.pas and hunspell.inc from https://github.com/davidbannon/hunspell4pas
+To call Application in hunspell.pas add Forms to uses in implementation. It should 
+in hunspell.pas look like
+
+uses LazUTF8, SysUtils, {$ifdef linux}Process,{$endif} LazFileUtils, {Forms,} lazlogger, Forms;
+// LazUTF8 requires lazutils be added to dependencies
+// Forms needed so we can call Application.~   , add LCLBase to dependencies
+// lazlogger for the debug lines. 
+
+Lazspell is under license: 
+
+Unit Main License is https://creativecommons.org/publicdomain/zero/1.0/deed.en 
+Unit Functions License is https://creativecommons.org/publicdomain/zero/1.0/deed.en
+
+libhunspell.dll was compiled with Microsoft Visual C++ 2010. from the original source from 
+http://sourceforge.net/projects/hunspell/files/Hunspell/1.3.2/hunspell-1.3.2.tar.gz/download
+
+You must distribute this file with your program. 
 
 Lazspell
 
