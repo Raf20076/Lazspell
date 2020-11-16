@@ -1,40 +1,40 @@
 {$MODE objfpc}{$H+}
 unit hunspell;
 
-{   Hunspell wrapper.
-    Based on code that seems to appear in lots of places in the Lazarus Forum
-    and elsewhere.
+{	Copyright (C) 2017-2020 David Bannon.
 
-    With additions and corrections by dbannon to make it a little easier to use.
+    License:
+    This code is licensed under BSD 3-Clause Clear License, see file License.txt
+    or https://spdx.org/licenses/BSD-3-Clause-Clear.html
 
-    As such, its assumed to be free to use by anyone for any purpose.
-}
+    Note this unit 'includes' hunspell.inc that has a different license, please
+    see that file for details.
 
-{   A Unit to connect to the hunspell library and check some spelling.
-    First, create the class, it will try and find a library to load.
+	A Unit to connect to the hunspell library and check some spelling.
+	First, create the class, it will try and find a library to load.
     Check ErrorMessage.
     Then call SetDictionary(), with a full filename of the dictionary to use.
     If GoodToGo is true, you can call Spell() and Suggests()
     otherwise, look in ErrorString for what went wrong.
 
     Look in FindLibrary() for default locations of Library.
+    2018/10/31  Changed to TLibHandle to accomadate Mac 64bit
+    2018/11/01  Added /usr/local/Cellar/hunspell/1.6.2/lib/ as place to look
+                for hunspell library on Mac. Need to make that more flexible.
+    2018/11/29  Better debug messages
+    2020/11/13  Moved newly generated hunspell bindings out to a inc file.
 }
 
 
 interface
+
 uses Classes, dynlibs;
 
-type
-  THunspell_create = function(aff_file: PChar; dict_file: PChar): Pointer; cdecl;
-  THunspell_destroy = procedure(spell: Pointer); cdecl;
-  THunspell_spell = function(spell: Pointer; word: PChar): Boolean; cdecl;
-  THunspell_suggest = function(spell: Pointer; out slst: PPChar; word: PChar): Integer; cdecl;
-  THunspell_analyze = function(spell: Pointer; var slst: PPChar; word: PChar): Integer; cdecl;
-  THunspell_stem = function(spell: Pointer; var slst: PPChar; word: PChar): Integer; cdecl;
-  THunspell_free_list = procedure(spell: Pointer; var slst: PPChar; n: integer); cdecl;
-  THunspell_get_dic_encoding = function(spell: Pointer): PChar; cdecl;
-  THunspell_add = function(spell: Pointer; word: PChar): Integer; cdecl;
-  THunspell_remove = function(spell: Pointer; word: PChar): Integer; cdecl;
+{ The Hunspell bindings are 'included' from another file to keep license
+  issues managable and to comply with Debian requirements. }
+
+
+{$INCLUDE hunspell.inc}
 
    { THunspell }
 
@@ -50,9 +50,11 @@ type
     ErrorMessage : ANSIString;
             { Will have a full name to library if correctly loaded at create }
     LibraryFullName : string;
+            { if set t, typically by caller, prints a lot of whats happening }
+    DebugMode : boolean;
             { Will have a "first guess" as to where dictionaries are, poke another name in
             and call FindDictionary() if default did not work }
-    constructor Create();
+    constructor Create(const Debug : boolean; const FullLibName : ANSIString = '');
     destructor Destroy; override;
             { Returns True if word spelt correctly }
     function Spell(Word: string): boolean;
@@ -81,12 +83,15 @@ var Hunspell_free_list: THunspell_free_list;
 var Hunspell_remove: THunspell_remove;
 
 var HunLibLoaded: Boolean = False;
-var HunLibHandle: THandle;
+var HunLibHandle: {THandle;} TLibHandle;     // 64bit requires use of TLibHandle
+    // see https://forum.lazarus.freepascal.org/index.php/topic,34352.msg225157.html
 
 implementation
 
-uses LazUTF8, SysUtils, {$ifdef linux}Process, {$else} Forms, {$endif} LazFileUtils;
-// Forms needed so we can call Application.~
+uses LazUTF8, SysUtils, {$ifdef linux}Process,{$endif} LazFileUtils, {Forms,} lazlogger, Forms;
+// LazUTF8 requires lazutils be added to dependencies
+// Forms needed so we can call Application.~   , add LCLBase to dependencies
+// lazlogger for the debug lines.
 
 { THunspell }
 
@@ -94,13 +99,14 @@ function THunspell.LoadHunspellLibrary(libraryName: Ansistring): Boolean;
 begin
     Result := false;
     HunLibHandle := LoadLibrary(PAnsiChar(libraryName));
-    if HunLibHandle = NilHandle then
-        ErrorMessage := 'Failed to load library ' + libraryName
-    else begin
+    if HunLibHandle = NilHandle then begin
+        if Debugmode then debugln('Failed to load library ' + libraryName);
+        ErrorMessage := 'Failed to load library ' + libraryName;
+    end else begin
         Result := True;
         Hunspell_create := THunspell_create(GetProcAddress(HunLibHandle, 'Hunspell_create'));
-        if not Assigned(Hunspell_create) then Result := False;
-        Hunspell_destroy := Thunspell_destroy(GetProcAddress(HunLibHandle, 'Hunspell_destroy'));
+        if not Assigned(Hunspell_create) then Result := False; 
+    	Hunspell_destroy := Thunspell_destroy(GetProcAddress(HunLibHandle, 'Hunspell_destroy'));
         if not Assigned(Hunspell_destroy) then Result := False;
         Hunspell_spell := THunspell_spell(GetProcAddress(HunLibHandle, 'Hunspell_spell'));
         if not Assigned(Hunspell_spell) then Result := False;
@@ -121,22 +127,32 @@ begin
         HunLibLoaded := Result;
     end;
     if ErrorMessage = '' then
-        if not Result then ErrorMessage := 'Failed to find functions in ' + LibraryName;
+        if not Result then begin
+            ErrorMessage := 'Failed to find functions in ' + LibraryName;
+            if debugmode then debugln('Hunspell Failed to find functions in ' + LibraryName);
+        end;
+    if Result and debugmode then  debugln('Loaded library OK ' + LibraryName);
 end;
 
-constructor THunspell.Create();
+constructor THunspell.Create(const Debug : boolean; const FullLibName : ANSIString = '');
 begin
+    DebugMode := Debug;
     ErrorMessage := '';
-    if Not FindLibrary(LibraryFullName) then begin
-        ErrorMessage := 'Cannot find Hunspell library';
-        exit();
-    end;
+    LibraryFullName := FullLibName;
+    if LibraryFullName = '' then
+        if Not FindLibrary(LibraryFullName) then begin
+            if debugmode then debugln('Cannot find Hunspell library');
+            ErrorMessage := 'Cannot find Hunspell library';
+            exit();
+        end;
+    if debugmode then debugln('Creating Hunspell with library = ' + LibraryFullName);
     LoadHunspellLibrary(LibraryFullName);    // will flag any errors it finds
     Speller := nil;           // we are not GoodToGo yet, need a dictionary ....
 end;
 
 destructor THunspell.Destroy;
 begin
+    if DebugMode then debugln('About to destry Hunspell');
     if (HunLibHandle <> 0) and HunLibLoaded then begin
         if Speller<>nil then hunspell_destroy(Speller);
         Speller:=nil;
@@ -154,6 +170,7 @@ end;
 procedure THunspell.Suggest(Word: string; List: TStrings);
 var i, len: Integer;
 	SugList, Words: PPChar;
+    //Blar : AnsiString;
 begin
     List.clear;
     try
@@ -161,8 +178,8 @@ begin
         Words := SugList;
         for i := 1 to len do begin
             List.Add(Words^);
-            Inc(PtrInt(Words), sizeOf(Pointer));//must be otherwise suggesting don't work
-
+            //Blar := Words^;
+            Inc(PtrInt(Words), sizeOf(Pointer));
         end;
     finally
         Hunspell_free_list(Speller, SugList, len);
@@ -182,8 +199,10 @@ end;
 function THunspell.FindLibrary(out FullName : ANSIString):boolean;
 var
     {$ifdef LINUX} I : integer = 1; {$endif}
+    {$ifndef LINUX}
     Info : TSearchRec;
     Mask : ANSIString;
+    {$endif}
 begin
     Result := False;
     {$IFDEF LINUX}
@@ -194,35 +213,73 @@ begin
         UTF8Delete(FullName, 1, I-1);
         UTF8Delete(FullName, UTF8Pos(#10, FullName, 1), 1);
         Result := True;
-    end;
-    exit();
+    end else
+        if RunCommand('/bin/bash',['-c','/sbin/ldconfig -p | grep hunspell'], FullName) then begin
+            while UTF8Pos(' ', FullName, I) <> 0 do inc(I);
+            if I=1 then exit();
+            UTF8Delete(FullName, 1, I-1);
+            UTF8Delete(FullName, UTF8Pos(#10, FullName, 1), 1);
+            Result := True;
+        end;
     {$ENDIF}
-    {$IFDEF WINDOWS}		// Look for a dll in application home dir.
-    Mask := '*hunspell*.dll';
-    FullName := ExtractFilePath(Application.ExeName);
-    {$endif}
     {$ifdef DARWIN}
     Mask := 'libhunspell*';
-    FullName := '/usr/lib/';
+    FullName := '/usr/local/Cellar/hunspell/1.6.2/lib/';
+    //     /usr/local/Cellar/hunspell/1.6.2/lib/libhunspell-1.6.0.dylib
+    if FindFirst(FullName + Mask, faAnyFile and faDirectory, Info)=0 then begin
+        FullName := FullName + Info.name;
+        Result := True;
+    end;
+    if not result then begin
+        FullName := '/usr/lib/';
+        if FindFirst(FullName + Mask, faAnyFile and faDirectory, Info)=0 then begin
+            FullName := FullName + Info.name;
+            Result := True;
+        end;
+    end;
+    FindClose(Info);
     {$endif}
+    {$ifdef WINDOWS}
+    // Now, only Windows left. Look for a dll in application home dir.
+    Mask := '*hunspell*.dll';
+    FullName := ExtractFilePath(Application.ExeName);
     if FindFirst(FullName + Mask, faAnyFile and faDirectory, Info)=0 then begin
         FullName := FullName + Info.name;
         Result := True;
     end;
     FindClose(Info);
+    {$endif}
+    if Result then begin
+        if DebugMode then debugln('FindLibrary looks promising [', FullName, ']');
+    end else
+        if DebugMode then debugln('FindLibrary Failed to find a Hunspell Library', FullName, ']');
 end;
 
 function THunspell.SetDictionary(const FullDictName: string) : boolean;
 var
     FullAff : string;
 begin
+    if debugmode then debugln('about to try to set dictionary');
+    Result := False;
+    if not FileExistsUTF8(FullDictName) then exit();
     FullAff := FullDictName;
     UTF8Delete(FullAff, UTF8Length(FullAff) - 2, 3);
     FullAff := FullAff + 'aff';
-    if Speller <> Nil then
-        hunspell_destroy(Speller);
-    Speller := hunspell_create(PChar(FullAff), PChar(FullDictName));
-    GoodToGo := Speller <> Nil;
+    if not FileExistsutf8(FullAFF) then exit();
+    try
+        if assigned(Speller) then begin
+                hunspell_destroy(Speller);
+                if debugmode then debugln('Speller destroyed');
+        end;
+        Speller := hunspell_create(PChar(FullAff), PChar(FullDictName));
+                        // Create does not test the dictionaries !
+    except
+        on E: Exception do debugln('Hunspell ' + E.Message);
+    else
+        debugln('Hunspell has lost it !');
+    end;
+    Result := false;
+    GoodToGo := assigned(Speller);
     if not GoodToGo then
         ErrorMessage := 'Failed to set Dictionary ' + FullDictName;
     Result := GoodToGo;
@@ -235,7 +292,3 @@ begin
 end;
 
 end.
-
-
-
-

@@ -7,11 +7,9 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, MainUnit, hunspell
-  { you can add units after this };
+  Forms, Main, Hunspell, Functions;
 
 {$R *.res}
-
 begin
   RequireDerivedFormResource:=True;
   Application.Scaled:=True;
