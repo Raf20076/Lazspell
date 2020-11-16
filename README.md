@@ -8,7 +8,8 @@ Lazspell is an example of spelling checker written in Lazarus ide.
 Lazspell is an example of a speller which checks spelling in German, English, Spanish,
 French, Italian, Portugues, Polish and Russian.
 
-All dictionaries are coded in UTF-8 from https://github.com/wooorm/dictionaries
+All dictionaries are coded in UTF-8 in dict folder from https://github.com/wooorm/dictionaries
+You must distribute dict folder with your program.
 
 Lazspell uses hunspell.pas and hunspell.inc from https://github.com/davidbannon/hunspell4pas
 To call Application in hunspell.pas add Forms to uses in implementation. 
