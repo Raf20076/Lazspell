@@ -1,5 +1,6 @@
 # Lazspell
 Lazspell by Raf20076, Poland, 2020
+
 Lazspell - Lazspell is an example of simple spellcheker program written in Lazarus ide.
 
 <img src="https://raw.githubusercontent.com/Raf20076/Lazspell/master/Screenshot.PNG"/>
