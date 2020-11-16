@@ -11,8 +11,8 @@ French, Italian, Portugues, Polish and Russian.
 All dictionaries are coded in UTF-8 from https://github.com/wooorm/dictionaries
 
 Lazspell uses hunspell.pas and hunspell.inc from https://github.com/davidbannon/hunspell4pas
-To call Application in hunspell.pas add Forms to uses in implementation. It should 
-in hunspell.pas look like
+To call Application in hunspell.pas add Forms to uses in implementation. 
+In hunspell.pas it should look like
 
 ```pascal 
 uses LazUTF8, SysUtils, {$ifdef linux}Process,{$endif} LazFileUtils, {Forms,} lazlogger, Forms;
