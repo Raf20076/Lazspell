@@ -6,6 +6,7 @@ uses LazUTF8, SysUtils, {$ifdef linux}Process,{$endif} LazFileUtils, {Forms,} la
 // LazUTF8 requires lazutils be added to dependencies
 // Forms needed so we can call Application.~   , add LCLBase to dependencies
 // lazlogger for the debug lines. 
+In this hunspell.pas Forms was already added.
 }
 
 unit Main;
