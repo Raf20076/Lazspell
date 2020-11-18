@@ -3,7 +3,7 @@ Lazspell by Raf20076, Poland, 2020
 
 Lazspell is an example of spelling checker written in Lazarus ide.
 
-<img src="https://raw.githubusercontent.com/Raf20076/Lazspell/master/Screenshot.PNG"/>
+<img src="https://raw.githubusercontent.com/Raf20076/Lazspell/master/lazspell.gif"/>
 
 Lazspell is an example of a speller which checks spelling in German, English, Spanish,
 French, Italian, Portugues, Polish and Russian.
