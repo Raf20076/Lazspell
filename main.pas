@@ -2,10 +2,8 @@
 {To call Application in hunspell.pas add Forms to uses in implementation.} 
 {In hunspell.pas it should look like:}
 
-{implementation
-
-uses LazUTF8, SysUtils, {$ifdef linux}Process,{$endif} LazFileUtils, {Forms,} lazlogger, Forms;}
- 
+//implementation
+//uses LazUTF8, SysUtils, {$ifdef linux}Process,{$endif} LazFileUtils, {Forms,} lazlogger, Forms;
 // In this hunspell.pas Forms was already added.
 
 
