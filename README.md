@@ -12,15 +12,7 @@ All dictionaries are coded in UTF-8 in dict folder from https://github.com/wooor
 You must distribute dict folder with your program.
 
 Lazspell uses hunspell.pas and hunspell.inc from https://github.com/davidbannon/hunspell4pas
-To call Application in hunspell.pas add Forms to uses in implementation. 
-In hunspell.pas it should look like
 
-```pascal 
-uses LazUTF8, SysUtils, {$ifdef linux}Process,{$endif} LazFileUtils, {Forms,} lazlogger, Forms;
-// LazUTF8 requires lazutils be added to dependencies
-// Forms needed so we can call Application.~   , add LCLBase to dependencies
-// lazlogger for the debug lines. 
-```
 Lazspell is under license: 
 
 Unit Main License is https://creativecommons.org/publicdomain/zero/1.0/deed.en 
