@@ -3,6 +3,8 @@ Lazspel by Raf20076, Poland, 2020
 Lazspell is an example of a speller which checks spelling in German, English, Spanish,
 French, Italian, Portugues, Polish and Russian.
 
+In this example Tmemo component was used which is a part of Lazarus IDE.
+
 All dictionaries are coded in UTF-8 from https://github.com/wooorm/dictionaries
 
 Lazspell uses hunspell.pas and hunspell.inc from https://github.com/davidbannon/hunspell4pas
