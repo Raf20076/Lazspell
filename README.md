@@ -3,7 +3,7 @@ Lazspell by Raf20076, Poland, 2020
 
 Lazspell is an example of spelling checker written in Lazarus Ide.
 
-In this example Tmemo component was used which is a part of Lazarus IDE.
+In this example <b>Tmemo component</b> was used which is a part of Lazarus IDE.
 
 <img src="https://raw.githubusercontent.com/Raf20076/Lazspell/master/lazspell.gif"/>
 
