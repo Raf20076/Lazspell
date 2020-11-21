@@ -1,4 +1,5 @@
 # Lazspell
+
 Lazspell by Raf20076, Poland, 2020
 
 Lazspell is an example of spelling checker written in Lazarus Ide.
