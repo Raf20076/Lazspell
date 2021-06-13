@@ -124,6 +124,7 @@ begin
 procedure TMainForm.ListBoxErrorsClick(Sender: TObject);
 var
      Selected : AnsiString;
+     i: integer;
 
 begin
 
@@ -131,6 +132,12 @@ begin
     Selected := ListBoxErrors.Items.Strings[ListBoxErrors.ItemIndex];
     FindInMemo(Memo,Selected,0+1); //Show an error in MemoText
     SpellCheck.Suggest(Selected,ListBoxSuggestions.Items);
+    
+    if ListBoxErrors.SelCount > 0 then begin
+    For i := ListBoxErrors.Items.Count - 1 downto 0 do
+    if ListBoxErrors.Selected [i] then
+    ListBoxErrors.Items.Delete (i);
+    end;                              
 
     end;
 
